@@ -138,6 +138,11 @@ public class HttpClientOptions extends ClientOptionsBase {
    */
   public static final boolean DEFAULT_HTTP2_CLEAR_TEXT_UPGRADE = true;
 
+  /**
+   * Default max redirect = 16
+   */
+  public static final int DEFAULT_MAX_REDIRECTS = 16;
+
   private boolean verifyHost = true;
   private int maxPoolSize;
   private boolean keepAlive;
@@ -159,6 +164,7 @@ public class HttpClientOptions extends ClientOptionsBase {
   private Http2Settings initialSettings;
   private List<HttpVersion> alpnVersions;
   private boolean http2ClearTextUpgrade;
+  private int maxRedirects;
 
   /**
    * Default constructor
@@ -195,6 +201,7 @@ public class HttpClientOptions extends ClientOptionsBase {
     this.initialSettings = other.initialSettings != null ? new Http2Settings(other.initialSettings) : null;
     this.alpnVersions = other.alpnVersions != null ? new ArrayList<>(other.alpnVersions) : null;
     this.http2ClearTextUpgrade = other.http2ClearTextUpgrade;
+    this.maxRedirects = other.maxRedirects;
   }
 
   /**
@@ -229,6 +236,7 @@ public class HttpClientOptions extends ClientOptionsBase {
     initialSettings = new Http2Settings();
     alpnVersions = new ArrayList<>(DEFAULT_ALPN_VERSIONS);
     http2ClearTextUpgrade = DEFAULT_HTTP2_CLEAR_TEXT_UPGRADE;
+    maxRedirects = DEFAULT_MAX_REDIRECTS;
   }
 
   @Override
@@ -801,6 +809,24 @@ public class HttpClientOptions extends ClientOptionsBase {
     return this;
   }
 
+  /**
+   * @return the maximum number of redirection a request can follow
+   */
+  public int getMaxRedirects() {
+    return maxRedirects;
+  }
+
+  /**
+   * Set to {@code maxRedirects} the maximum number of redirection a request can follow.
+   *
+   * @param maxRedirects the maximum number of redirection
+   * @return a reference to this, so the API can be used fluently
+   */
+  public HttpClientOptions setMaxRedirects(int maxRedirects) {
+    this.maxRedirects = maxRedirects;
+    return this;
+  }
+
   public HttpClientOptions setMetricsName(String metricsName) {
     return (HttpClientOptions) super.setMetricsName(metricsName);
   }
@@ -844,6 +870,7 @@ public class HttpClientOptions extends ClientOptionsBase {
     if (alpnVersions == null ? that.alpnVersions != null : !alpnVersions.equals(that.alpnVersions)) return false;
     if (http2ClearTextUpgrade != that.http2ClearTextUpgrade) return false;
     if (http2ConnectionWindowSize != that.http2ConnectionWindowSize) return false;
+    if (maxRedirects != that.maxRedirects) return false;
 
     return true;
   }
@@ -868,6 +895,7 @@ public class HttpClientOptions extends ClientOptionsBase {
     result = 31 * result + (alpnVersions != null ? alpnVersions.hashCode() : 0);
     result = 31 * result + (http2ClearTextUpgrade ? 1 : 0);
     result = 31 * result + http2ConnectionWindowSize;
+    result = 31 * result + maxRedirects;
     return result;
   }
 }
