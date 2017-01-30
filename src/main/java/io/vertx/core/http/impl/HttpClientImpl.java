@@ -28,6 +28,7 @@ import io.vertx.core.impl.ContextImpl;
 import io.vertx.core.impl.VertxInternal;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.net.ConnectOptions;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
 import io.vertx.core.net.impl.SSLHelper;
@@ -332,12 +333,22 @@ public class HttpClientImpl implements HttpClient, MetricsProvider {
         port = 443;
       }
     }
-    return doRequest(method, url.getHost(), port, url.getFile(), null);
+    return doRequest(method, url.getHost(), port, null, url.getFile(), null);
   }
 
   @Override
   public HttpClientRequest request(HttpMethod method, int port, String host, String requestURI) {
-    return doRequest(method, host, port, requestURI, null);
+    return doRequest(method, host, port, null, requestURI, null);
+  }
+
+  @Override
+  public HttpClientRequest request(HttpMethod method, ConnectOptions options, String requestURI, Handler<HttpClientResponse> responseHandler) {
+    return request(method, options, requestURI).handler(responseHandler);
+  }
+
+  @Override
+  public HttpClientRequest request(HttpMethod method, ConnectOptions options, String requestURI) {
+    return doRequest(method, options.getHost(), options.getPort(), options.isSsl(), requestURI, null);
   }
 
   @Override
@@ -687,8 +698,8 @@ public class HttpClientImpl implements HttpClient, MetricsProvider {
     });
   }
 
-  void getConnectionForRequest(int port, String host, Waiter waiter) {
-    connectionManager.getConnectionForRequest(options.getProtocolVersion(), port, host, waiter);
+  void getConnectionForRequest(boolean ssl, int port, String host, Waiter waiter) {
+    connectionManager.getConnectionForRequest(ssl, options.getProtocolVersion(), port, host, waiter);
   }
 
   /**
@@ -715,7 +726,7 @@ public class HttpClientImpl implements HttpClient, MetricsProvider {
     }
   }
 
-  private HttpClientRequest doRequest(HttpMethod method, String host, int port, String relativeURI, MultiMap headers) {
+  private HttpClientRequest doRequest(HttpMethod method, String host, int port, Boolean ssl, String relativeURI, MultiMap headers) {
     Objects.requireNonNull(method, "no null method accepted");
     Objects.requireNonNull(host, "no null host accepted");
     Objects.requireNonNull(relativeURI, "no null relativeURI accepted");
@@ -735,7 +746,7 @@ public class HttpClientImpl implements HttpClient, MetricsProvider {
           relativeURI, vertx);
       req.setHost(host + (port != 80 ? ":" + port : ""));
     } else {
-      req = new HttpClientRequestImpl(this, method, host, port, options.isSsl(), relativeURI, vertx);
+      req = new HttpClientRequestImpl(this, method, host, port, ssl != null ? ssl : options.isSsl(), relativeURI, vertx);
     }
     if (headers != null) {
       req.headers().setAll(headers);

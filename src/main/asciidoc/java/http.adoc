@@ -962,7 +962,7 @@ client.headNow("/other-uri", response -> {
 ==== Writing general requests
 
 At other times you don't know the request method you want to send until run-time. For that use case we provide
-general purpose request methods such as `link:../../apidocs/io/vertx/core/http/HttpClient.html#request-io.vertx.core.http.HttpMethod-int-java.lang.String-java.lang.String-[request]` which allow you to specify
+general purpose request methods such as `link:../../apidocs/io/vertx/core/http/HttpClient.html#request-io.vertx.core.http.HttpMethod-io.vertx.core.net.ConnectOptions-java.lang.String-io.vertx.core.Handler-[request]` which allow you to specify
 the HTTP method at run-time:
 
 [source,java]
@@ -984,7 +984,7 @@ Sometimes you'll want to write requests which have a body, or perhaps you want t
 before sending it.
 
 To do this you can call one of the specific request methods such as `link:../../apidocs/io/vertx/core/http/HttpClient.html#post-int-java.lang.String-java.lang.String-[post]` or
-one of the general purpose request methods such as `link:../../apidocs/io/vertx/core/http/HttpClient.html#request-io.vertx.core.http.HttpMethod-int-java.lang.String-java.lang.String-[request]`.
+one of the general purpose request methods such as `link:../../apidocs/io/vertx/core/http/HttpClient.html#request-io.vertx.core.http.HttpMethod-io.vertx.core.net.ConnectOptions-java.lang.String-io.vertx.core.Handler-[request]`.
 
 These methods don't send the request immediately, but instead return an instance of `link:../../apidocs/io/vertx/core/http/HttpClientRequest.html[HttpClientRequest]`
 which can be used to write to the request body or write headers.

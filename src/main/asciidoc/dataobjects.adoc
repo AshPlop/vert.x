@@ -251,6 +251,22 @@ Set whether Netty pooled buffers are enabled
 +++
 |===
 
+[[ConnectOptions]]
+== ConnectOptions
+
+++++
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[host]]`host`|`String`|-
+|[[port]]`port`|`Number (int)`|-
+|[[ssl]]`ssl`|`Boolean`|-
+|===
+
 [[DatagramSocketOptions]]
 == DatagramSocketOptions
 

@@ -21,6 +21,7 @@ import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.metrics.Measured;
+import io.vertx.core.net.ConnectOptions;
 
 /**
  * An asynchronous HTTP client.
@@ -53,6 +54,9 @@ import io.vertx.core.metrics.Measured;
 @VertxGen
 public interface HttpClient extends Measured {
 
+  HttpClientRequest request(HttpMethod method, ConnectOptions options, String requestURI, Handler<HttpClientResponse> responseHandler);
+
+  HttpClientRequest request(HttpMethod method, ConnectOptions options, String requestURI);
 
   /**
    * Create an HTTP request to send to the server at the specified host and port.
